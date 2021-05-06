@@ -46,21 +46,17 @@ JOIN Customers
 ON Orders.CustomerID = Orders.CustomerID
 WHERE Customers.Country="Germany";
 ```
-- Then we have the order id and the country.
+Then we have all the order id in Germany.
 ```
-ELECT Orders.OrderID, Customers.Country, OrderDetails.Quantity, Products.ProductName
-FROM Orders, OrderDetails
-JOIN Customers ON Orders.CustomerID=Customers.CustomerID
-JOIN Products ON OrderDetails.ProductID=Products.ProductID
-WHERE Country='Germany';
-
-
-SELECT ProductName, Quantity, COUNT(*) as "NumOrders"
-FROM Products_Ordered
-GROUP BY ProductName;
-
-SELECT ProductName, Quantity, NumOrders, (Quantity * Orders) AS TotalOrdered
-FROM Product_Orders
-ORDER BY TotalOrdered desc
-LIMIT 1;
+SELECT Customers.Country,
+    OrderDetails.ProductID,
+    SUM(OrderDetails.Quantity) AS "TotalOrder"
+FROM Orders
+JOIN Customers
+    ON Customers.CustomerID = Orders.CustomerID
+JOIN OrderDetails
+    ON OrderDetails.OrderID = Orders.OrderID
+WHERE Customers.Country = 'Germany'
+GROUP BY OrderDetails.ProductID
+ORDER BY TotalOrder DESC
 ```
